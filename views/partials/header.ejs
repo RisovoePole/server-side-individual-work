@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title><%= typeof title !== 'undefined' ? title + ' — EasySportMD' : 'EasySportMD' %></title>
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+<header class="site-header">
+  <div class="container header-inner">
+    <a class="brand" href="/"><span class="brand-mark">◉</span> EasySportMD</a>
+    <nav class="main-nav">
+      <a href="/venues">Площадки</a>
+      <a href="/bookings">Расписание</a>
+      <% if (currentUser) { %>
+        <a href="/statistics">Статистика</a>
+        <a href="/profile">Профиль</a>
+        <% if (currentUser.role === 'admin') { %>
+          <a class="nav-accent" href="/venues/new">+ Площадка</a>
+          <a class="nav-accent" href="/bookings/new">+ Бронь</a>
+        <% } %>
+      <% } else { %>
+        <a href="/login">Вход</a>
+        <a class="nav-accent" href="/register">Регистрация</a>
+      <% } %>
+    </nav>
+  </div>
+</header>
+
+<% if (currentUser) { %>
+<div class="user-bar">
+  <div class="container">
+    Вы вошли как <strong><%= currentUser.name %></strong>
+    <span class="role-badge"><%= currentUser.role === 'admin' ? 'администратор' : 'пользователь' %></span>
+  </div>
+</div>
+<% } %>
+
+<main class="container main-content">
+  <%- include('flash') %>

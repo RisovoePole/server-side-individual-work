@@ -1,0 +1,44 @@
+<%- include('partials/header') %>
+
+<section class="hero">
+  <div class="hero-content">
+    <span class="eyebrow">INDEPENDENT WORK · NODE.JS</span>
+    <h1>Спорт начинается с забронированной площадки</h1>
+    <p class="hero-text">
+      EasySportMD — публичный каталог спортивных площадок и расписание броней.
+      Проверьте свободное время, забронируйте площадку и управляйте своими записями.
+    </p>
+    <div class="hero-actions">
+      <a class="btn btn-primary" href="/venues">Смотреть площадки</a>
+      <% if (!currentUser) { %>
+        <a class="btn btn-ghost" href="/register">Зарегистрироваться</a>
+      <% } else { %>
+        <a class="btn btn-ghost" href="/bookings/new">Забронировать</a>
+      <% } %>
+    </div>
+  </div>
+  <div class="hero-stats">
+    <div class="stat-tile"><strong><%= venueCount %></strong><span>площадок в каталоге</span></div>
+    <div class="stat-tile"><strong><%= bookingCount %></strong><span>активных броней</span></div>
+  </div>
+</section>
+
+<section class="features">
+  <article class="feature-card">
+    <div class="feature-icon">⌕</div>
+    <h3>Быстрый поиск</h3>
+    <p>Поиск по названию и адресу, фильтры по виду спорта и городу, сортировка по цене.</p>
+  </article>
+  <article class="feature-card">
+    <div class="feature-icon">▦</div>
+    <h3>Прозрачное расписание</h3>
+    <p>На странице площадки видно, кто и во сколько забронировал её на каждый день.</p>
+  </article>
+  <article class="feature-card">
+    <div class="feature-icon">↻</div>
+    <h3>Мгновенные уведомления</h3>
+    <p>Когда администратор добавляет площадку, все онлайн-пользователи получают уведомление.</p>
+  </article>
+</section>
+
+<%- include('partials/footer') %>

@@ -1,0 +1,48 @@
+<%- include('../partials/header') %>
+
+<div class="page-head">
+  <div>
+    <h1>Расписание броней</h1>
+    <p class="muted">Кто, когда и на какой площадке забронировал время. Отменённые брони не блокируют площадку.</p>
+  </div>
+  <% if (currentUser) { %>
+    <a class="btn btn-primary" href="/bookings/new">+ Новая бронь</a>
+  <% } %>
+</div>
+
+<% if (bookings.length) { %>
+<div class="table-wrap">
+  <table class="data-table">
+    <thead>
+      <tr><th>Дата и время</th><th>Площадка</th><th>Клиент</th><th>Статус</th><th>Действия</th></tr>
+    </thead>
+    <tbody>
+      <% bookings.forEach(function (booking) { %>
+      <tr>
+        <td><strong><%= formatDate(booking.date) %></strong><br><small><%= booking.startTime %>–<%= booking.endTime %></small></td>
+        <td><a class="table-link" href="/venues/<%= booking.venueId %>"><%= booking.Venue ? booking.Venue.title : '—' %></a></td>
+        <td><%= booking.client ? booking.client.name : '—' %></td>
+        <td><span class="status status-<%= booking.status %>"><%= labelFor(BOOKING_STATUSES, booking.status) %></span></td>
+        <td class="actions">
+          <a class="btn btn-small" href="/bookings/<%= booking.id %>">Подробнее</a>
+          <% if (currentUser && currentUser.role === 'admin') { %>
+            <a class="btn btn-small btn-outline" href="/bookings/<%= booking.id %>/edit">Изменить</a>
+            <form class="inline-form" method="post" action="/bookings/<%= booking.id %>/delete" onsubmit="return confirm('Удалить бронь без возможности восстановления?');">
+              <button class="btn btn-small btn-danger" type="submit">Удалить</button>
+            </form>
+          <% } else if (currentUser && booking.client && booking.client.id === currentUser.id && booking.status === 'confirmed') { %>
+            <form class="inline-form" method="post" action="/bookings/<%= booking.id %>/cancel" onsubmit="return confirm('Отменить бронь?');">
+              <button class="btn btn-small btn-danger" type="submit">Отменить</button>
+            </form>
+          <% } %>
+        </td>
+      </tr>
+      <% }); %>
+    </tbody>
+  </table>
+</div>
+<% } else { %>
+<div class="empty-state">Броней пока нет. Зарегистрируйтесь и забронируйте первую площадку.</div>
+<% } %>
+
+<%- include('../partials/footer') %>

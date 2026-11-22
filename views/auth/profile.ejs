@@ -1,0 +1,22 @@
+<%- include('../partials/header') %>
+
+<div class="page-head">
+  <div>
+    <h1>Мой профиль</h1>
+    <p class="muted">Данные аккаунта и история входов.</p>
+  </div>
+</div>
+
+<div class="card profile-card">
+  <div class="profile-avatar"><%= user.name.charAt(0).toUpperCase() %></div>
+  <dl class="detail-list">
+    <div><dt>Имя</dt><dd><%= user.name %></dd></div>
+    <div><dt>Email</dt><dd><%= user.email %></dd></div>
+    <div><dt>Роль</dt><dd><span class="role-badge"><%= user.role %></span></dd></div>
+    <div><dt>Дата регистрации</dt><dd><%= formatDateTime(user.createdAt) %></dd></div>
+    <div><dt>Последний вход</dt><dd><%= formatDateTime(user.lastLogin) %></dd></div>
+  </dl>
+  <p class="hint">Пароль и его хэш на этой странице не отображаются и не хранятся в сессии.</p>
+</div>
+
+<%- include('../partials/footer') %>

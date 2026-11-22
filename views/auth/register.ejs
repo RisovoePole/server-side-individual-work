@@ -1,0 +1,41 @@
+<%- include('../partials/header') %>
+
+<section class="auth-wrap">
+  <div class="auth-card">
+    <h1>Регистрация</h1>
+    <p class="muted">Новый пользователь автоматически получает роль <code>user</code>.</p>
+
+    <form method="post" action="/register" novalidate>
+      <div class="form-group">
+        <label for="name">Имя</label>
+        <input id="name" name="name" type="text" value="<%= values.name || '' %>" autocomplete="name" required>
+        <% if (fieldError('name')) { %><span class="field-error"><%= fieldError('name') %></span><% } %>
+      </div>
+
+      <div class="form-group">
+        <label for="email">Email</label>
+        <input id="email" name="email" type="email" value="<%= values.email || '' %>" autocomplete="email" required>
+        <% if (fieldError('email')) { %><span class="field-error"><%= fieldError('email') %></span><% } %>
+      </div>
+
+      <div class="form-group">
+        <label for="password">Пароль</label>
+        <input id="password" name="password" type="password" autocomplete="new-password" required>
+        <% if (fieldError('password')) { %><span class="field-error"><%= fieldError('password') %></span><% } %>
+        <small>Минимум 6 символов. Пароль будет сохранён только в виде bcrypt-хэша.</small>
+      </div>
+
+      <div class="form-group">
+        <label for="confirmPassword">Подтверждение пароля</label>
+        <input id="confirmPassword" name="confirmPassword" type="password" autocomplete="new-password" required>
+        <% if (fieldError('confirmPassword')) { %><span class="field-error"><%= fieldError('confirmPassword') %></span><% } %>
+      </div>
+
+      <button class="btn btn-primary btn-block" type="submit">Создать аккаунт</button>
+    </form>
+
+    <p class="auth-foot">Уже есть аккаунт? <a href="/login">Войдите</a></p>
+  </div>
+</section>
+
+<%- include('../partials/footer') %>

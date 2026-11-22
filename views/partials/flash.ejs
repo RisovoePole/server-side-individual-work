@@ -1,0 +1,6 @@
+<% if (typeof flash !== 'undefined' && flash) { %>
+  <div class="alert alert-<%= flash.type === 'success' ? 'success' : 'error' %>"><%= flash.message %></div>
+<% } %>
+<% if (typeof loggedOut !== 'undefined' && loggedOut) { %>
+  <div class="alert alert-success">Вы успешно вышли из аккаунта.</div>
+<% } %>

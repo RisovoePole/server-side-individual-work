@@ -1,0 +1,70 @@
+<%- include('../partials/header') %>
+
+<div class="page-head">
+  <div>
+    <a class="back-link" href="/bookings">← Расписание</a>
+    <h1><%= mode === 'edit' ? 'Редактирование брони' : 'Новая бронь' %></h1>
+    <p class="muted">Площадка выбирается из списка — foreign key вводить вручную не нужно.</p>
+  </div>
+</div>
+
+<div class="card form-card">
+  <form method="post" action="<%= mode === 'edit' ? '/bookings/' + values.id : '/bookings' %>" novalidate>
+    <div class="form-grid">
+      <div class="form-group full-width">
+        <label for="venueId">Площадка *</label>
+        <select id="venueId" name="venueId" required>
+          <option value="">Выберите площадку</option>
+          <% venues.forEach(function (venue) { %>
+            <option value="<%= venue.id %>" <%= String(values.venueId) === String(venue.id) ? 'selected' : '' %>><%= venue.title %> — <%= venue.city %></option>
+          <% }); %>
+        </select>
+        <% if (fieldError('venueId')) { %><span class="field-error"><%= fieldError('venueId') %></span><% } %>
+      </div>
+
+      <div class="form-group">
+        <label for="date">Дата *</label>
+        <input id="date" name="date" type="date" value="<%= values.date || '' %>" required>
+        <% if (fieldError('date')) { %><span class="field-error"><%= fieldError('date') %></span><% } %>
+      </div>
+
+      <div class="form-group">
+        <label for="startTime">Время начала *</label>
+        <input id="startTime" name="startTime" type="time" value="<%= values.startTime || '' %>" required>
+        <% if (fieldError('startTime')) { %><span class="field-error"><%= fieldError('startTime') %></span><% } %>
+      </div>
+
+      <div class="form-group">
+        <label for="endTime">Время окончания *</label>
+        <input id="endTime" name="endTime" type="time" value="<%= values.endTime || '' %>" required>
+        <% if (fieldError('endTime')) { %><span class="field-error"><%= fieldError('endTime') %></span><% } %>
+      </div>
+
+      <% if (isAdmin) { %>
+      <div class="form-group">
+        <label for="status">Статус</label>
+        <select id="status" name="status">
+          <% BOOKING_STATUSES.forEach(function (status) { %>
+            <option value="<%= status.value %>" <%= (values.status || 'confirmed') === status.value ? 'selected' : '' %>><%= status.label %></option>
+          <% }); %>
+        </select>
+      </div>
+      <% } else { %>
+        <input type="hidden" name="status" value="confirmed">
+      <% } %>
+
+      <div class="form-group full-width">
+        <label for="comment">Комментарий</label>
+        <textarea id="comment" name="comment" rows="3"><%= values.comment || '' %></textarea>
+        <% if (fieldError('comment')) { %><span class="field-error"><%= fieldError('comment') %></span><% } %>
+      </div>
+    </div>
+
+    <div class="form-actions">
+      <button class="btn btn-primary" type="submit"><%= mode === 'edit' ? 'Сохранить изменения' : 'Забронировать' %></button>
+      <a class="btn btn-ghost" href="/bookings">Отмена</a>
+    </div>
+  </form>
+</div>
+
+<%- include('../partials/footer') %>

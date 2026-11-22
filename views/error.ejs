@@ -1,0 +1,15 @@
+<%- include('partials/header') %>
+
+<div class="error-page">
+  <div class="error-code"><%= statusCode %></div>
+  <h1><%= title %></h1>
+  <p><%= message %></p>
+  <% if (details) { %><div class="alert alert-error"><%= details %></div><% } %>
+  <% if (statusCode === 401) { %>
+    <a class="btn btn-primary" href="/login">Перейти ко входу</a>
+  <% } else { %>
+    <a class="btn btn-primary" href="/">На главную</a>
+  <% } %>
+</div>
+
+<%- include('partials/footer') %>

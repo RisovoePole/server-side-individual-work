@@ -1,0 +1,50 @@
+<%- include('../partials/header') %>
+
+<div class="page-head">
+  <div>
+    <a class="back-link" href="/bookings">← Расписание</a>
+    <h1>Бронь №<%= booking.id %></h1>
+    <p class="muted"><span class="status status-<%= booking.status %>"><%= labelFor(BOOKING_STATUSES, booking.status) %></span></p>
+  </div>
+  <div class="page-actions">
+    <% if (currentUser && currentUser.role === 'admin') { %>
+      <a class="btn btn-outline" href="/bookings/<%= booking.id %>/edit">Изменить</a>
+      <form class="inline-form" method="post" action="/bookings/<%= booking.id %>/delete" onsubmit="return confirm('Удалить бронь?');">
+        <button class="btn btn-danger" type="submit">Удалить</button>
+      </form>
+    <% } else if (currentUser && booking.client && booking.client.id === currentUser.id && booking.status === 'confirmed') { %>
+      <form class="inline-form" method="post" action="/bookings/<%= booking.id %>/cancel" onsubmit="return confirm('Отменить бронь?');">
+        <button class="btn btn-danger" type="submit">Отменить бронь</button>
+      </form>
+    <% } %>
+  </div>
+</div>
+
+<div class="detail-columns">
+  <section class="card">
+    <h2>Информация о брони</h2>
+    <dl class="detail-list">
+      <div><dt>Дата</dt><dd><%= formatDate(booking.date) %></dd></div>
+      <div><dt>Время</dt><dd><%= booking.startTime %>–<%= booking.endTime %></dd></div>
+      <div><dt>Статус</dt><dd><%= labelFor(BOOKING_STATUSES, booking.status) %></dd></div>
+      <div><dt>Кто забронировал</dt><dd><%= booking.client ? booking.client.name : '—' %></dd></div>
+      <div><dt>Комментарий</dt><dd><%= booking.comment || '—' %></dd></div>
+    </dl>
+  </section>
+
+  <section class="card">
+    <h2>Связанная площадка</h2>
+    <% if (booking.Venue) { %>
+      <dl class="detail-list">
+        <div><dt>Название</dt><dd><a href="/venues/<%= booking.Venue.id %>"><%= booking.Venue.title %></a></dd></div>
+        <div><dt>Город</dt><dd><%= booking.Venue.city %></dd></div>
+        <div><dt>Вид спорта</dt><dd><%= labelFor(SPORTS, booking.Venue.sport) %></dd></div>
+        <div><dt>Цена за час</dt><dd><%= formatMoney(booking.Venue.pricePerHour) %></dd></div>
+      </dl>
+    <% } else { %>
+      <p class="muted">Площадка была удалена.</p>
+    <% } %>
+  </section>
+</div>
+
+<%- include('../partials/footer') %>

@@ -1,0 +1,84 @@
+<%- include('../partials/header') %>
+
+<div class="page-head">
+  <div>
+    <h1>Спортивные площадки</h1>
+    <p class="muted">Найдите площадку, посмотрите описание и свободное время.</p>
+  </div>
+  <% if (currentUser && currentUser.role === 'admin') { %>
+    <a class="btn btn-primary" href="/venues/new">+ Добавить площадку</a>
+  <% } %>
+</div>
+
+<form class="filter-panel" method="get" action="/venues">
+  <div class="filter-grid">
+    <label>Поиск (название или адрес)
+      <input type="text" name="q" value="<%= filters.q || '' %>" placeholder="например, Теннисный корт">
+    </label>
+    <label>Вид спорта
+      <select name="sport">
+        <option value="">Все виды</option>
+        <% SPORTS.forEach(function (sport) { %>
+          <option value="<%= sport.value %>" <%= filters.sport === sport.value ? 'selected' : '' %>><%= sport.label %></option>
+        <% }); %>
+      </select>
+    </label>
+    <label>Город
+      <input type="text" name="city" value="<%= filters.city || '' %>" placeholder="Киев">
+    </label>
+    <label>Сортировать по
+      <select name="sort">
+        <% SORT_FIELDS.forEach(function (field) { %>
+          <option value="<%= field.value %>" <%= (filters.sort || 'pricePerHour') === field.value ? 'selected' : '' %>><%= field.label %></option>
+        <% }); %>
+      </select>
+    </label>
+    <label>Направление
+      <select name="dir">
+        <option value="asc" <%= (filters.dir || 'asc') === 'asc' ? 'selected' : '' %>>По возрастанию ↑</option>
+        <option value="desc" <%= filters.dir === 'desc' ? 'selected' : '' %>>По убыванию ↓</option>
+      </select>
+    </label>
+  </div>
+  <div class="filter-actions">
+    <button class="btn btn-primary" type="submit">Применить</button>
+    <a class="btn btn-ghost" href="/venues">Сбросить фильтры</a>
+    <span class="muted">Найдено: <%= venues.length %></span>
+  </div>
+</form>
+
+<% if (venues.length) { %>
+<div class="table-wrap">
+  <table class="data-table">
+    <thead>
+      <tr><th>Площадка</th><th>Вид спорта</th><th>Город</th><th>Цена за час</th><th>Действия</th></tr>
+    </thead>
+    <tbody>
+      <% venues.forEach(function (venue) { %>
+      <tr>
+        <td>
+          <a class="table-link" href="/venues/<%= venue.id %>"><%= venue.title %></a>
+          <small><%= venue.address %></small>
+        </td>
+        <td><span class="tag"><%= labelFor(SPORTS, venue.sport) %></span></td>
+        <td><%= venue.city %></td>
+        <td><strong><%= formatMoney(venue.pricePerHour) %></strong></td>
+        <td class="actions">
+          <a class="btn btn-small" href="/venues/<%= venue.id %>">Подробнее</a>
+          <% if (currentUser && currentUser.role === 'admin') { %>
+            <a class="btn btn-small btn-outline" href="/venues/<%= venue.id %>/edit">Изменить</a>
+            <form class="inline-form" method="post" action="/venues/<%= venue.id %>/delete" onsubmit="return confirm('Удалить площадку и все её брони?');">
+              <button class="btn btn-small btn-danger" type="submit">Удалить</button>
+            </form>
+          <% } %>
+        </td>
+      </tr>
+      <% }); %>
+    </tbody>
+  </table>
+</div>
+<% } else { %>
+<div class="empty-state">По заданным условиям площадок не найдено. Измените поиск или фильтры.</div>
+<% } %>
+
+<%- include('../partials/footer') %>

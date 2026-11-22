@@ -1,0 +1,64 @@
+<%- include('../partials/header') %>
+
+<div class="page-head">
+  <div>
+    <h1>Статистика</h1>
+    <p class="muted">Показатели рассчитываются прямо в PostgreSQL и доступны только вошедшим пользователям.</p>
+  </div>
+</div>
+
+<section class="metric-grid">
+  <div class="metric-card">
+    <span class="metric-label">Всего площадок</span>
+    <strong><%= totalVenues %></strong>
+    <span class="metric-note">записей в каталоге</span>
+  </div>
+  <div class="metric-card">
+    <span class="metric-label">Всего броней</span>
+    <strong><%= totalBookings %></strong>
+    <span class="metric-note"><%= confirmedBookings %> активных · <%= cancelledBookings %> отменённых</span>
+  </div>
+  <div class="metric-card">
+    <span class="metric-label">Средняя цена за час</span>
+    <strong><%= formatMoney(avgPrice) %></strong>
+    <span class="metric-note">агрегат AVG(price_per_hour)</span>
+  </div>
+  <div class="metric-card">
+    <span class="metric-label">Самая дорогая площадка</span>
+    <strong class="metric-name"><%= maxVenue ? maxVenue.title : '—' %></strong>
+    <span class="metric-note"><%= maxVenue ? formatMoney(maxVenue.pricePerHour) + ' за час' : 'нет данных' %></span>
+  </div>
+</section>
+
+<div class="detail-columns">
+  <section class="card">
+    <h2>Площадки по видам спорта</h2>
+    <% const maxSport = Math.max(1, ...sportStats.map(function (item) { return item.count; })); %>
+    <div class="bars">
+      <% sportStats.forEach(function (item) { %>
+        <div class="bar-row">
+          <span class="bar-label"><%= item.label %></span>
+          <div class="bar-track"><div class="bar-fill" style="width: <%= (item.count / maxSport) * 100 %>%"></div></div>
+          <span class="bar-value"><%= item.count %></span>
+        </div>
+      <% }); %>
+    </div>
+  </section>
+
+  <section class="card">
+    <h2>Брони по статусам</h2>
+    <% const maxStatus = Math.max(1, ...statusStats.map(function (item) { return item.count; })); %>
+    <div class="bars">
+      <% statusStats.forEach(function (item) { %>
+        <div class="bar-row">
+          <span class="bar-label"><%= item.label %></span>
+          <div class="bar-track"><div class="bar-fill alt" style="width: <%= (item.count / maxStatus) * 100 %>%"></div></div>
+          <span class="bar-value"><%= item.count %></span>
+        </div>
+      <% }); %>
+    </div>
+    <p class="hint">Отменённая бронь остаётся в базе, но не блокирует время площадки.</p>
+  </section>
+</div>
+
+<%- include('../partials/footer') %>

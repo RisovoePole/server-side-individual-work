@@ -1,0 +1,64 @@
+<%- include('../partials/header') %>
+
+<div class="page-head">
+  <div>
+    <a class="back-link" href="/venues">← Все площадки</a>
+    <h1><%= venue.title %></h1>
+    <p class="muted"><span class="tag"><%= labelFor(SPORTS, venue.sport) %></span> · <%= venue.city %></p>
+  </div>
+  <div class="page-actions">
+    <% if (currentUser) { %>
+      <a class="btn btn-primary" href="/bookings/new?venueId=<%= venue.id %>">Забронировать время</a>
+    <% } else { %>
+      <a class="btn btn-primary" href="/login">Войдите, чтобы забронировать</a>
+    <% } %>
+    <% if (currentUser && currentUser.role === 'admin') { %>
+      <a class="btn btn-outline" href="/venues/<%= venue.id %>/edit">Изменить</a>
+      <form class="inline-form" method="post" action="/venues/<%= venue.id %>/delete" onsubmit="return confirm('Удалить площадку и все её брони?');">
+        <button class="btn btn-danger" type="submit">Удалить</button>
+      </form>
+    <% } %>
+  </div>
+</div>
+
+<div class="venue-layout">
+  <article class="card venue-main">
+    <% if (venue.photoUrl) { %>
+      <img class="venue-photo" src="<%= venue.photoUrl %>" alt="<%= venue.title %>" onerror="this.style.display='none'">
+    <% } %>
+    <h2>О площадке</h2>
+    <p><%= venue.description %></p>
+    <dl class="detail-list">
+      <div><dt>Адрес</dt><dd><%= venue.address %>, <%= venue.city %></dd></div>
+      <div><dt>Вид спорта</dt><dd><%= labelFor(SPORTS, venue.sport) %></dd></div>
+      <div><dt>Цена за час</dt><dd><strong><%= formatMoney(venue.pricePerHour) %></strong></dd></div>
+      <div><dt>Добавлена</dt><dd><%= formatDate(venue.createdAt) %></dd></div>
+    </dl>
+  </article>
+
+  <section class="card bookings-panel">
+    <h2>Бронирования и свободное время</h2>
+    <% if (bookings.length) { %>
+      <div class="table-wrap">
+        <table class="data-table compact">
+          <thead><tr><th>Дата</th><th>Время</th><th>Кто забронировал</th><th>Статус</th></tr></thead>
+          <tbody>
+            <% bookings.forEach(function (booking) { %>
+            <tr>
+              <td><%= formatDate(booking.date) %></td>
+              <td><%= booking.startTime %>–<%= booking.endTime %></td>
+              <td><a href="/bookings/<%= booking.id %>"><%= booking.client ? booking.client.name : '—' %></a></td>
+              <td><span class="status status-<%= booking.status %>"><%= labelFor(BOOKING_STATUSES, booking.status) %></span></td>
+            </tr>
+            <% }); %>
+          </tbody>
+        </table>
+      </div>
+      <p class="hint">Отменённые брони не блокируют время площадки.</p>
+    <% } else { %>
+      <div class="empty-state small">Броней пока нет — всё время свободно.</div>
+    <% } %>
+  </section>
+</div>
+
+<%- include('../partials/footer') %>
